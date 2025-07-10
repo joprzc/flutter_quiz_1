@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quiz/data/api_questions.dart';
+import 'package:flutter_quiz/screens/questions_screen.dart';
 //import 'package:flutter_quiz/screens/questions_screen.dart';
 import 'package:flutter_quiz/screens/start_screen.dart';
 
@@ -23,25 +24,43 @@ class _QuizState extends State<Quiz> {
     activeScreen = StartScreen(switchScreen);
   }
   */
+  int? selectedQuizId;
   var activeScreen = 'start-screen';
 
-  //cambiar la pantalla de inicio a la de preguntas
-  void switchScreen() {
+  void switchApiQuestions() {
     setState(() {
-      //activeScreen = const QuestionsScreen();
+      activeScreen = 'api-questions';
+    });
+  }
+
+  void switchApiQuestions1(int quizId) {
+    setState(() {
+      selectedQuizId = quizId;
       activeScreen = 'questions-screen';
-      //activeScreen = 'api-questions';
+    });
+  }
+
+  void switchQuestionsScreen(int quizId) {
+    setState(() {
+      selectedQuizId = quizId;
+      activeScreen = 'questions-screen';
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidget =
-        activeScreen == 'start-screen'
-            ? StartScreen(switchScreen)
-            //: const QuestionsScreen();
-            : const ApiQuestions();
-    //viene de main la clase MaterialApp
+    Widget screenWidget;
+
+    if (activeScreen == 'start-screen') {
+      screenWidget = StartScreen(switchApiQuestions);
+    } else if (activeScreen == 'api-questions') {
+      screenWidget = ApiQuestions(onQuizSelected: switchApiQuestions1);
+    } else if (activeScreen == 'questions-screen' && selectedQuizId != null) {
+      screenWidget = QuestionsScreen(quizId: selectedQuizId!);
+    } else {
+      screenWidget = const Center(child: Text('No se ha seleccionado un quiz'));
+    }
+
     return MaterialApp(
       debugShowCheckedModeBanner: false, //quitar etiqueta DEBUG
       home: Scaffold(

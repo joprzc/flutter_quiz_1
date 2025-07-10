@@ -1,10 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+//import 'package:flutter_quiz/screens/questions_screen.dart';
+//import 'package:flutter_quiz/screens/questions_screen.dart';
 import 'package:http/http.dart' as http;
 
 class ApiQuestions extends StatefulWidget {
-  const ApiQuestions({super.key});
+  const ApiQuestions({super.key, required this.onQuizSelected});
+
+  // para llamar a la clase QuestionsScreen
+  //final VoidCallback onQuizSelected;
+  final void Function(int quizId) onQuizSelected;
 
   @override
   State<ApiQuestions> createState() => _ApiQuestionsState();
@@ -94,8 +100,39 @@ class _ApiQuestionsState extends State<ApiQuestions> {
                       horizontal: 16,
                     ),
                     //child: ItemWidget(text: title),
-                    //dar acccion botones
-                    child: ItemWidget(text: title, onTap: () {}),
+                    //cambiar de pantalla con botones
+                    child: ElevatedButton(
+                      //onPressed: widget.onQuizSelected,
+                      //child: Text(title),
+                      // cambia a pantalla questions_screen
+                      /*
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder:
+                                (context) =>
+                                    QuestionsScreen(quizId: quiz['id']),
+                          ),
+                        );
+                      },
+                      */
+                      onPressed: () {
+                        widget.onQuizSelected(quiz['id']);
+                      },
+                      child: Text(title),
+                    ),
+                    /*
+                    child: ItemWidget(
+                      text: title,
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const QuestionsScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    */
                   );
                 }).toList(),
           ),
