@@ -10,6 +10,9 @@ class AnswerButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //return ElevatedButton(onPressed: () {}, child: Text(data));
-    return ElevatedButton(onPressed: onTap, child: Text(text));
+    return ElevatedButton(
+      onPressed: onTap,
+      child: Text(text, textAlign: TextAlign.center),
+    );
   }
 }

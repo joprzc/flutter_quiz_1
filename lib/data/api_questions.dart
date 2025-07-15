@@ -73,7 +73,8 @@ class _ApiQuestionsState extends State<ApiQuestions> {
       );
     }
     //lista de quiz
-    return Center(
+    return Container(
+      margin: const EdgeInsets.all(30), // ajustar ancho de botones
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
