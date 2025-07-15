@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quiz/data/api_questions.dart';
+import 'package:flutter_quiz/models/quiz_questions.dart';
 import 'package:flutter_quiz/screens/questions_screen.dart';
-//import 'package:flutter_quiz/screens/questions_screen.dart';
+import 'package:flutter_quiz/screens/results_screen.dart';
 import 'package:flutter_quiz/screens/start_screen.dart';
 
 //paso 3
@@ -27,6 +28,26 @@ class _QuizState extends State<Quiz> {
   int? selectedQuizId;
   var activeScreen = 'start-screen';
 
+  // eligir la respuesta correcta
+  List<String> selectedAnswers = [];
+  // para contar las preguntas
+  List<QuizQuestions> preguntas = [];
+
+  void chooseAnswer(String answer) {
+    selectedAnswers.add(answer);
+
+    print('Respuestas: ${selectedAnswers.length} ${preguntas.length}');
+
+    // reiniciar quiz(volver a pantalla inicial)
+    if (selectedAnswers.length == preguntas.length) {
+      setState(() {
+        selectedAnswers = [];
+        // activeScreen = 'start-screen';
+        activeScreen = 'results-screen';
+      });
+    }
+  }
+
   void switchApiQuestions() {
     setState(() {
       activeScreen = 'api-questions';
@@ -47,6 +68,15 @@ class _QuizState extends State<Quiz> {
     });
   }
 
+  // reiniciar quiz
+  void restartQuiz() {
+    setState(() {
+      selectedAnswers = [];
+      preguntas = [];
+      activeScreen = 'start-screen';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget screenWidget;
@@ -56,7 +86,25 @@ class _QuizState extends State<Quiz> {
     } else if (activeScreen == 'api-questions') {
       screenWidget = ApiQuestions(onQuizSelected: switchApiQuestions1);
     } else if (activeScreen == 'questions-screen' && selectedQuizId != null) {
-      screenWidget = QuestionsScreen(quizId: selectedQuizId!);
+      // modificar para elegir la respuesta correcta
+      // screenWidget = QuestionsScreen(quizId: selectedQuizId!);
+      screenWidget = QuestionsScreen(
+        quizId: selectedQuizId!,
+        onSelectAnswer: chooseAnswer,
+        onQuestionsLoaded: (cargadas) {
+          setState(() {
+            preguntas = cargadas; //  guardar para luego comparar
+          });
+        },
+      );
+      // mostrar pantalla con resultados
+    } else if (activeScreen == 'results-screen') {
+      screenWidget = ResultsScreen(
+        // mostrar preguntas resueltas
+        chosenAnswers: selectedAnswers,
+        preguntas: preguntas,
+        onRestart: restartQuiz,
+      );
     } else {
       screenWidget = const Center(child: Text('No se ha seleccionado un quiz'));
     }
